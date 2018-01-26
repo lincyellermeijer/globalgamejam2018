@@ -6,6 +6,8 @@ public class EnemyController : MonoBehaviour
 {
     public GameObject hit;
     public GameObject mine;
+    // change this to private
+    public GameObject player;
 
     void Update()
     {
@@ -28,6 +30,11 @@ public class EnemyController : MonoBehaviour
             Debug.Log("A button pressed");
             GameObject expl = Instantiate(hit, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
             // Add explosion force
+            Vector2 dir = player.transform.position - transform.position;
+            dir = dir.normalized;
+            player.GetComponent<Rigidbody2D>().AddForce(dir * 20);
+
+
             Destroy(expl, 0.2f);
         }
 
