@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    public GameObject hit;
+    public GameObject mine;
+
     void Update()
     {
         // Movement
@@ -23,6 +26,9 @@ public class EnemyController : MonoBehaviour
         if (Abtn)
         {
             Debug.Log("A button pressed");
+            GameObject expl = Instantiate(hit, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
+            // Add explosion force
+            Destroy(expl, 0.2f);
         }
 
         // B Button
@@ -36,6 +42,7 @@ public class EnemyController : MonoBehaviour
         bool Xbtn = Input.GetKeyDown("joystick button 2");
         if (Xbtn)
         {
+            GameObject obj = Instantiate(mine, new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
             Debug.Log("X button pressed");
         }
 
@@ -45,5 +52,10 @@ public class EnemyController : MonoBehaviour
         {
             Debug.Log("Y button pressed");
         }
+
+        //void Explosion()
+        //{
+
+        //}
     }
 }
