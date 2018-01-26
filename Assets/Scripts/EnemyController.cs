@@ -32,9 +32,13 @@ public class EnemyController : MonoBehaviour
             // Add explosion force
             Vector2 dir = player.transform.position - transform.position;
             dir = dir.normalized;
-            player.GetComponent<Rigidbody2D>().AddForce(dir * 20);
-
-
+            float distance = Vector2.Distance(transform.position, player.transform.position);
+            // TODO: Playtest this (if value is 2 then enemy can only push player away very close)
+            if (distance < 15f)
+            {
+                player.GetComponent<Rigidbody2D>().AddForce((dir * (1 / (distance))) * 500);
+            }
+            Debug.Log(distance);
             Destroy(expl, 0.2f);
         }
 
