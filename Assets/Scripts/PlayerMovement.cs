@@ -15,6 +15,8 @@ public class PlayerMovement : MonoBehaviour {
 
     public float speed;
     public float maxVelocity;
+    [Range(0, 1)]
+    public float drag;
     public float jumpForce;
     public float wallJumpForce;
     public float wallJumpSidewaysForce;
@@ -24,8 +26,11 @@ public class PlayerMovement : MonoBehaviour {
     public float dashCooldown;
     public float dashTimeStamp;
 
+    public float stunTime;
+
     public bool grounded = false;
     public bool onWall = false;
+    public bool canMove = true;
 
     Rigidbody2D rb;
     public Vector2 currentVelocity;
@@ -46,8 +51,11 @@ public class PlayerMovement : MonoBehaviour {
     {
         h = Input.GetAxis("Horizontal");
 
-        Movement();
-        Dash();
+        if (canMove)
+        {
+            Movement();
+            Dash();
+        }
 	}
 
     void Dash()
@@ -56,7 +64,7 @@ public class PlayerMovement : MonoBehaviour {
         {
             case States.Ready:
 
-                if (Input.GetButtonDown("X"))
+                if (Input.GetButtonDown("X") && h != 0)
                 {
                     state = States.Dashing;
                 }
@@ -81,17 +89,24 @@ public class PlayerMovement : MonoBehaviour {
 
     IEnumerator PlayerDash()
     {
-        h = Input.GetAxis("Horizontal");
         rb.velocity = new Vector2(dashVelocity * h, 0);
         rb.gravityScale = 0;
         yield return new WaitForSeconds(0.1f);
         rb.velocity = Vector2.zero;
+        rb.velocity = new Vector2(maxVelocity * h, 0);
         rb.gravityScale = 1;
+    }
+
+    IEnumerator Stun()
+    {
+        canMove = false;
+        rb.velocity = new Vector2(0, rb.velocity.y);
+        yield return new WaitForSeconds(stunTime);
+        canMove = true;
     }
 
     void Movement()
     {
-
         //Player Movement        
         currentVelocity = rb.velocity;
 
@@ -112,6 +127,10 @@ public class PlayerMovement : MonoBehaviour {
         if (Input.GetAxis("Horizontal") != 0)
         {
             rb.AddForce(new Vector2(h * speed, 0));
+        }
+        else
+        {
+            rb.velocity = new Vector2(rb.velocity.x * drag, rb.velocity.y);
         }
 
         //Jumping/Falling
@@ -163,6 +182,12 @@ public class PlayerMovement : MonoBehaviour {
             grounded = true;
             onWall = false;
         }
+
+        if (collision.gameObject.CompareTag("Mine"))
+        {
+            StartCoroutine(Stun());
+            Destroy(collision.gameObject);
+        }
     }
 
     private void OnCollisionStay2D(Collision2D collision)
@@ -173,6 +198,15 @@ public class PlayerMovement : MonoBehaviour {
             {
                 onWall = true;
             }
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("SlowField"))
+        {
+            rb.drag = 0.5f;
+            Debug.Log("piemels");
         }
     }
 }

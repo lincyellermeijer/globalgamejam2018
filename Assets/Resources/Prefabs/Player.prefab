@@ -99,12 +99,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec159219b721e144dabd19ee90eb9fdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  state: 0
   speed: 100
   maxVelocity: 15
   jumpForce: 10
   wallJumpForce: 7
   wallJumpSidewaysForce: 0
   wallSlideSpeed: 3
+  dashVelocity: 0
+  dashCooldown: 0
+  dashTimeStamp: 0
   grounded: 0
   onWall: 0
   currentVelocity: {x: 0, y: 0}
