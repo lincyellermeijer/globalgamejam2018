@@ -12,6 +12,8 @@ public class EnemyController : MonoBehaviour
     private float nextFireMine;
     public GameObject coolDownIcons;
 
+    public Image[] cdImages;
+
     private void Start()
     {
         player = GameObject.FindWithTag("Player");
@@ -31,9 +33,26 @@ public class EnemyController : MonoBehaviour
         pos.z = -1;
         transform.position = pos;
 
+        if (cdImages[0].fillAmount > 0)
+        {
+            cdImages[0].fillAmount = nextFireExplosion - Time.time;
+        }
+
+        if (cdImages[1].fillAmount > 0)
+        {
+            cdImages[1].fillAmount = (nextFireSlowField - Time.time) / 5f;
+        }
+
+        if (cdImages[2].fillAmount > 0)
+        {
+            cdImages[2].fillAmount = (nextFireMine - Time.time) / 2f;
+        }
+
         // A Button
         if (Input.GetButtonDown("Fire1") && Time.time > nextFireExplosion)
         {
+            cdImages[0].fillAmount = 1f;
+            
             fireRate = 1f;
             nextFireExplosion = Time.time + fireRate;
             CameraShake.script.Shake(.5f, .2f);
@@ -53,6 +72,8 @@ public class EnemyController : MonoBehaviour
         // B Button
         if (Input.GetButtonDown("Fire2") && Time.time > nextFireSlowField)
         {
+            cdImages[1].fillAmount = 1f;
+
             fireRate = 5f;
             //If the player fired, reset the NextFire time to a new point in the future
             nextFireSlowField = Time.time + fireRate;
@@ -72,6 +93,8 @@ public class EnemyController : MonoBehaviour
         // X Button
         if (Input.GetButtonDown("Fire3") && Time.time > nextFireMine)
         {
+            cdImages[2].fillAmount = 1f;
+
             fireRate = 2f;
             //If the player fired, reset the NextFire time to a new point in the future
             nextFireMine = Time.time + fireRate;
