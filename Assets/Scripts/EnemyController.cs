@@ -25,8 +25,8 @@ public class EnemyController : MonoBehaviour
 
         // Clamp position to borders
         Vector3 pos = transform.position;
-        pos.x = Mathf.Clamp(pos.x, -12.5f, 12.5f);
-        pos.y = Mathf.Clamp(pos.y, -9.5f, 9.5f);
+        pos.x = Mathf.Clamp(pos.x, -24.5f, 24.5f);
+        pos.y = Mathf.Clamp(pos.y, -18f, 18f);
         pos.z = -1;
         transform.position = pos;
 
@@ -41,7 +41,7 @@ public class EnemyController : MonoBehaviour
             // TODO: Playtest this (if value is 2 then enemy can only push player away very close)
             if (distance < 15f)
             {
-                player.GetComponent<Rigidbody2D>().AddForce((dir * (1 / (distance))) * 500);
+                player.GetComponent<Rigidbody2D>().AddForce((dir * (1 / (distance))) * 1000);
             }
             Destroy(expl, 0.2f);
         }
