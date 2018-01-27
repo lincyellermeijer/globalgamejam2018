@@ -67,7 +67,7 @@ public class PlayerMovement : MonoBehaviour {
         //Jumping/Falling
         if (Input.GetButton("A") && grounded && !onWall)
         {            
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y + jumpForce);
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             grounded = false;
         }
         if (rb.velocity.y < 0 && !onWall)
@@ -100,7 +100,7 @@ public class PlayerMovement : MonoBehaviour {
                     wallJumpSidewaysForce = -10f;
                 }
             }
-            rb.velocity = new Vector2(rb.velocity.x + wallJumpSidewaysForce, rb.velocity.y + wallJumpForce);
+            rb.velocity = new Vector2(wallJumpSidewaysForce, wallJumpForce);
 
         }
     }
