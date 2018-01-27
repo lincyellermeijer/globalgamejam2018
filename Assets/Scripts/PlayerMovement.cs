@@ -6,10 +6,12 @@ public class PlayerMovement : MonoBehaviour {
 
     public enum States
     {
-        InAir,
+        Ready,
         Dashing,
-        WallCling
+        Cooldown
     }
+
+    public States state;
 
     public float speed;
     public float maxVelocity;
@@ -17,6 +19,10 @@ public class PlayerMovement : MonoBehaviour {
     public float wallJumpForce;
     public float wallJumpSidewaysForce;
     public float wallSlideSpeed;
+
+    public float dashVelocity;
+    public float dashCooldown;
+    public float dashTimeStamp;
 
     public bool grounded = false;
     public bool onWall = false;
@@ -28,6 +34,7 @@ public class PlayerMovement : MonoBehaviour {
     public float lowJumpMulitplier;
 
     BoxCollider2D boxColl;
+    float h;
 
     void Start ()
     {
@@ -37,15 +44,58 @@ public class PlayerMovement : MonoBehaviour {
 
 	void FixedUpdate ()
     {
+        h = Input.GetAxis("Horizontal");
+
         Movement();
+        Dash();
 	}
+
+    void Dash()
+    {
+        switch (state)
+        {
+            case States.Ready:
+
+                if (Input.GetButtonDown("X"))
+                {
+                    state = States.Dashing;
+                }
+                break;
+
+            case States.Dashing:
+
+                StartCoroutine(PlayerDash());
+                dashTimeStamp = Time.time + dashCooldown;
+                state = States.Cooldown;
+                break;
+
+            case States.Cooldown:
+
+                if (dashTimeStamp <= Time.time)
+                {
+                    state = States.Ready;
+                }
+                break;
+        }
+    }
+
+    IEnumerator PlayerDash()
+    {
+        h = Input.GetAxis("Horizontal");
+        rb.velocity = new Vector2(dashVelocity * h, 0);
+        rb.gravityScale = 0;
+        yield return new WaitForSeconds(0.1f);
+        rb.velocity = Vector2.zero;
+        rb.gravityScale = 1;
+    }
 
     void Movement()
     {
-        //Player Movement
-        float h = Input.GetAxis("Horizontal");
+
+        //Player Movement        
         currentVelocity = rb.velocity;
 
+        //MaxVelocity Settings
         if (currentVelocity.x >= maxVelocity)
         {
             currentVelocity.x = maxVelocity;
@@ -79,6 +129,7 @@ public class PlayerMovement : MonoBehaviour {
             rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMulitplier) * Time.deltaTime;
         }
 
+        //WallJump
         if (Input.GetButton("A") && !grounded && onWall)
         {
             onWall = false;
@@ -105,11 +156,6 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
 
-    void WallJump()
-    {
-
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
@@ -117,11 +163,6 @@ public class PlayerMovement : MonoBehaviour {
             grounded = true;
             onWall = false;
         }
-
-        //if (collision.gameObject.CompareTag("Wall"))
-        //{
-
-        //}
     }
 
     private void OnCollisionStay2D(Collision2D collision)
