@@ -9,6 +9,7 @@ TagManager:
   - Mine
   - SlowField
   - Enemy
+  - Collectible
   layers:
   - Default
   - TransparentFX

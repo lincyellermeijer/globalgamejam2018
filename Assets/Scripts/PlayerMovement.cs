@@ -159,6 +159,7 @@ public class PlayerMovement : MonoBehaviour {
         if (collision.gameObject.CompareTag("Collectible"))
         {
             collectibles++;
+            Destroy(collision.gameObject);
             //Move collectible to next location
         }
     }
