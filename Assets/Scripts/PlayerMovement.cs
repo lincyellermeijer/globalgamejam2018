@@ -45,8 +45,6 @@ public class PlayerMovement : MonoBehaviour {
 	void FixedUpdate ()
     {
         h = Input.GetAxis("Move");
-
-        Debug.Log(h);
         Movement();
         Dash();
 	}
@@ -92,7 +90,6 @@ public class PlayerMovement : MonoBehaviour {
 
     void Movement()
     {
-
         //Player Movement        
         currentVelocity = rb.velocity;
 
@@ -113,6 +110,13 @@ public class PlayerMovement : MonoBehaviour {
         if (Input.GetAxis("Move") != 0)
         {
             rb.AddForce(new Vector2(h * speed, 0));
+
+         //   GetComponent<Animator>().SetBool("isWalking", true);
+        }
+        else
+        {
+
+          //  GetComponent<Animator>().SetBool("isWalking", false);
         }
 
         //Jumping/Falling
