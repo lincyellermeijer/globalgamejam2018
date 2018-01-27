@@ -168,7 +168,9 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         Time.timeScale = 1f;
-        //go back to menu
+        // Go back to main menu
+        MenuManager.Instance.sceneToStart = 0;
+        MenuManager.Instance.StartPressed();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

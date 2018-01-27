@@ -10,8 +10,8 @@ public class MenuManager : MonoBehaviour
     public MenuSettings menuSettingsData;
     public int sceneToStart = 1;                                        //Index number in build settings of scene to load if changeScenes is true
     public bool changeMusicOnStart;										//Choose whether to continue playing menu music or start a new music clip
-    public CanvasGroup fadeOutImageCanvasGroup;                         //Canvas group used to fade alpha of image which fades in before changing scenes
-    public Image fadeImage;                                             //Reference to image used to fade out before changing scenes
+    private CanvasGroup fadeOutImageCanvasGroup;                         //Canvas group used to fade alpha of image which fades in before changing scenes
+    private Image fadeImage;                                             //Reference to image used to fade out before changing scenes
 
     [HideInInspector] public bool inMainMenu = true;                    //If true, pause button disabled in main menu (Cancel in input manager, default escape key)
     [HideInInspector] public AnimationClip fadeAlphaAnimationClip;      //Animation clip fading out UI elements alpha
@@ -32,17 +32,25 @@ public class MenuManager : MonoBehaviour
             Destroy(gameObject);
         }
 
+        DontDestroyOnLoad(transform.gameObject);
+
         //Get a reference to PlayMusic attached to UI object
         playMusic = GetComponent<PlayMusic>();
 
         //Get a reference to the CanvasGroup attached to the main menu so that we can fade it's alpha
         menuCanvasGroup = GetComponent<CanvasGroup>();
-
+        fadeImage = GameObject.FindWithTag("Fade").GetComponent<Image>();
+        fadeOutImageCanvasGroup = GameObject.FindWithTag("Fade").GetComponent<CanvasGroup>();
         fadeImage.color = menuSettingsData.sceneChangeFadeColor;
     }
 
     public void StartPressed()
     {
+        if (fadeImage == null)
+        {
+            fadeImage = GameObject.FindWithTag("Fade").GetComponent<Image>();
+            fadeOutImageCanvasGroup = GameObject.FindWithTag("Fade").GetComponent<CanvasGroup>();
+        }
         //If changeMusicOnStart is true, fade out volume of music group of AudioMixer by calling FadeDown function of PlayMusic
         //To change fade time, change length of animation "FadeToColor"
         if (menuSettingsData.musicLoopToChangeTo != null)
@@ -58,6 +66,7 @@ public class MenuManager : MonoBehaviour
 
             StartCoroutine(FadeCanvasGroupAlpha(0f, 1f, fadeOutImageCanvasGroup));
         }
+
     }
 
     void OnEnable()
