@@ -7,6 +7,7 @@ public class EnemyController : MonoBehaviour
 {
     private GameObject player;
     private float fireRate;
+    private float nextFireExplosion;
     private float nextFireSlowField;
     private float nextFireMine;
     public GameObject coolDownIcons;
@@ -31,9 +32,12 @@ public class EnemyController : MonoBehaviour
         transform.position = pos;
 
         // A Button
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Fire1") && Time.time > nextFireExplosion)
         {
-            GameObject expl = Instantiate(Resources.Load("Prefabs/Hit"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
+            fireRate = 1f;
+            nextFireExplosion = Time.time + fireRate;
+
+            GameObject expl = Instantiate(Resources.Load("Prefabs/PrimaryFireParticles"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
             // Add explosion force
             Vector2 dir = player.transform.position - transform.position;
             dir = dir.normalized;
@@ -43,7 +47,7 @@ public class EnemyController : MonoBehaviour
             {
                 player.GetComponent<Rigidbody2D>().AddForce((dir * (1 / (distance))) * 1000);
             }
-            Destroy(expl, 0.2f);
+            Destroy(expl, 0.7f);
         }
 
         // B Button
