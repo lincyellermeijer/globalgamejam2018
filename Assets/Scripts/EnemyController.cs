@@ -38,7 +38,7 @@ public class EnemyController : MonoBehaviour
             Vector2 dir = player.transform.position - transform.position;
             dir = dir.normalized;
             float distance = Vector2.Distance(transform.position, player.transform.position);
-            // TODO: Playtest this (if value is 2 then enemy can only push player away very close)
+
             if (distance < 15f)
             {
                 player.GetComponent<Rigidbody2D>().AddForce((dir * (1 / (distance))) * 1000);
@@ -60,7 +60,7 @@ public class EnemyController : MonoBehaviour
         
         GameObject slow = Instantiate(Resources.Load("Prefabs/SlowField"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
 
-            // TODO: logic of slowing down in player script
+            // Logic of slowing down in player script
             Destroy(icon, 5f);
             Destroy(slow, 3f);
         }
@@ -80,7 +80,7 @@ public class EnemyController : MonoBehaviour
             GameObject obj = Instantiate(Resources.Load("Prefabs/Mine"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
 
             Destroy(icon, 2f);
-            // TODO: logic of mine stun in player script
+            //Logic of mine stun in player script
         }
 
         // Y Button
