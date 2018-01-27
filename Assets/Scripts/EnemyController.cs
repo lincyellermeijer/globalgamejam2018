@@ -36,7 +36,7 @@ public class EnemyController : MonoBehaviour
         {
             fireRate = 1f;
             nextFireExplosion = Time.time + fireRate;
-
+            CameraShake.script.Shake(.5f, .2f);
             GameObject expl = Instantiate(Resources.Load("Prefabs/PrimaryFireParticles"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
             // Add explosion force
             Vector2 dir = player.transform.position - transform.position;
@@ -84,6 +84,7 @@ public class EnemyController : MonoBehaviour
             GameObject obj = Instantiate(Resources.Load("Prefabs/Mine"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
 
             Destroy(icon, 2f);
+            Destroy(obj, 10f);
             // TODO: logic of mine stun in player script
         }
 

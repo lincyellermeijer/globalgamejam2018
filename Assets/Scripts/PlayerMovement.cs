@@ -53,13 +53,10 @@ public class PlayerMovement : MonoBehaviour {
         trail = GetComponent<TrailRenderer>();
         particle = GetComponent<ParticleSystem>();
         rend = GetComponent<SpriteRenderer>();
-
         particle.Stop();
         currentSprite = sprite[0];
 
-        groundState = new GroundState(transform.gameObject);
-
-        
+        groundState = new GroundState(transform.gameObject);        
     }	
 
 	void Update ()
@@ -76,9 +73,7 @@ public class PlayerMovement : MonoBehaviour {
 		}
 
         rend.sprite = currentSprite;
-	}
-
-
+    }
 
 	void FixedUpdate()
     {
@@ -160,7 +155,13 @@ public class PlayerMovement : MonoBehaviour {
         canMove = false;
         currentSprite = sprite[2];
         Debug.Log(rend.sprite);
+        CameraShake.script.Shake(.5f, .2f);
+        Time.timeScale = .5f;
+        rb.AddForce(Vector2.up * 1000);
+        rb.AddForce(Vector2.right * Random.Range(-250, 250));
         yield return new WaitForSeconds(1f);
+
+        Time.timeScale = 1f;
         //go back to menu
     }
 
@@ -191,7 +192,8 @@ public class PlayerMovement : MonoBehaviour {
 
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            StartCoroutine(PlayerDead());            
+            StartCoroutine(PlayerDead());   
+            
         }
 
         if (collision.gameObject.CompareTag("Collectible"))
