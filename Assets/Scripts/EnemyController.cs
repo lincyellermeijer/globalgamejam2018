@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class EnemyController : MonoBehaviour
     private float fireRate;
     private float nextFireSlowField;
     private float nextFireMine;
+    public GameObject coolDownIcons;
 
     private void Start()
     {
@@ -53,10 +55,15 @@ public class EnemyController : MonoBehaviour
             //If the player fired, reset the NextFire time to a new point in the future
             nextFireSlowField = Time.time + fireRate;
 
-            GameObject slow = Instantiate(Resources.Load("Prefabs/SlowField"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
+            // Spawn cooldown icon
+            GameObject icon = Instantiate(Resources.Load("Prefabs/CoolDownIcon")) as GameObject;
+            icon.transform.SetParent(coolDownIcons.transform, false);
+            icon.GetComponent<Image>().color = Color.cyan;
+        
+        GameObject slow = Instantiate(Resources.Load("Prefabs/SlowField"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
 
             // TODO: logic of slowing down in player script
-
+            Destroy(icon, 5f);
             Destroy(slow, 3f);
         }
 
@@ -68,8 +75,14 @@ public class EnemyController : MonoBehaviour
             //If the player fired, reset the NextFire time to a new point in the future
             nextFireMine = Time.time + fireRate;
 
+            // Spawn cooldown icon
+            GameObject icon = Instantiate(Resources.Load("Prefabs/CoolDownIcon")) as GameObject;
+            icon.transform.SetParent(coolDownIcons.transform, false);
+            icon.GetComponent<Image>().color = Color.red;
+
             GameObject obj = Instantiate(Resources.Load("Prefabs/Mine"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
-            
+
+            Destroy(icon, 2f);
             // TODO: logic of mine stun in player script
         }
 
