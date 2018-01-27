@@ -44,8 +44,9 @@ public class PlayerMovement : MonoBehaviour {
 
 	void FixedUpdate ()
     {
-        h = Input.GetAxis("Horizontal");
+        h = Input.GetAxis("Move");
 
+        Debug.Log(h);
         Movement();
         Dash();
 	}
@@ -56,7 +57,7 @@ public class PlayerMovement : MonoBehaviour {
         {
             case States.Ready:
 
-                if (Input.GetButtonDown("X"))
+                if (Input.GetButtonDown("Dash"))
                 {
                     state = States.Dashing;
                 }
@@ -81,7 +82,7 @@ public class PlayerMovement : MonoBehaviour {
 
     IEnumerator PlayerDash()
     {
-        h = Input.GetAxis("Horizontal");
+        h = Input.GetAxis("Move");
         rb.velocity = new Vector2(dashVelocity * h, 0);
         rb.gravityScale = 0;
         yield return new WaitForSeconds(0.1f);
@@ -109,13 +110,13 @@ public class PlayerMovement : MonoBehaviour {
             currentVelocity.y = 10;
         }
 
-        if (Input.GetAxis("Horizontal") != 0)
+        if (Input.GetAxis("Move") != 0)
         {
             rb.AddForce(new Vector2(h * speed, 0));
         }
 
         //Jumping/Falling
-        if (Input.GetButton("A") && grounded && !onWall)
+        if (Input.GetButton("Jump") && grounded && !onWall)
         {            
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             grounded = false;
@@ -124,13 +125,13 @@ public class PlayerMovement : MonoBehaviour {
         {
             rb.velocity += Vector2.up * Physics2D.gravity.y * (fallingGrav) * Time.deltaTime;
         }
-        else if (rb.velocity.y > 0 && !Input.GetButton("A") && !onWall)
+        else if (rb.velocity.y > 0 && !Input.GetButton("Jump") && !onWall)
         {
             rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMulitplier) * Time.deltaTime;
         }
 
         //WallJump
-        if (Input.GetButton("A") && !grounded && onWall)
+        if (Input.GetButton("Jump") && !grounded && onWall)
         {
             onWall = false;
 

@@ -31,8 +31,7 @@ public class EnemyController : MonoBehaviour
         transform.position = pos;
 
         // A Button
-        bool Abtn = Input.GetKeyDown("joystick button 0");
-        if (Abtn)
+        if (Input.GetButtonDown("Fire1"))
         {
             GameObject expl = Instantiate(Resources.Load("Prefabs/Hit"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
             // Add explosion force
@@ -48,8 +47,7 @@ public class EnemyController : MonoBehaviour
         }
 
         // B Button
-        bool Bbtn = Input.GetKeyDown("joystick button 1");
-        if (Bbtn && Time.time > nextFireSlowField)
+        if (Input.GetButtonDown("Fire2") && Time.time > nextFireSlowField)
         {
             fireRate = 5f;
             //If the player fired, reset the NextFire time to a new point in the future
@@ -68,8 +66,7 @@ public class EnemyController : MonoBehaviour
         }
 
         // X Button
-        bool Xbtn = Input.GetKeyDown("joystick button 2");
-        if (Xbtn && Time.time > nextFireMine)
+        if (Input.GetButtonDown("Fire3") && Time.time > nextFireMine)
         {
             fireRate = 2f;
             //If the player fired, reset the NextFire time to a new point in the future
@@ -87,8 +84,7 @@ public class EnemyController : MonoBehaviour
         }
 
         // Y Button
-        bool Ybtn = Input.GetKeyDown("joystick button 3");
-        if (Ybtn)
+        if (Input.GetButtonDown("Fire4"))
         {
             Debug.Log("Y button pressed");
         }
