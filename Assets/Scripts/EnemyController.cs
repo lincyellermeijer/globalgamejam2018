@@ -41,6 +41,7 @@ public class EnemyController : MonoBehaviour
             // TODO: Playtest this (if value is 2 then enemy can only push player away very close)
             if (distance < 15f)
             {
+				Debug.Log("HIT");
                 player.GetComponent<Rigidbody2D>().AddForce((dir * (1 / (distance))) * 1000);
             }
             Destroy(expl, 0.2f);

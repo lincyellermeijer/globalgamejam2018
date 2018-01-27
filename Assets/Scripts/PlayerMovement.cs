@@ -65,7 +65,6 @@ public class PlayerMovement : MonoBehaviour {
 	void Update ()
     {
         input.x = Input.GetAxis("Move");
-		
 
 		if (Input.GetButton("Jump"))
 			input.y = 1;
