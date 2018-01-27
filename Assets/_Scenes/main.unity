@@ -152,6 +152,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 61919532387373476, guid: 89ca92d48eb40b241b0ebbdf015eedda,
+        type: 2}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 89ca92d48eb40b241b0ebbdf015eedda, type: 2}
   m_IsPrefabParent: 0
@@ -292,6 +297,16 @@ Prefab:
         type: 2}
       propertyPath: m_LinearDrag
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114069902457986338, guid: e6a3e106cf1cc7f4395b07c4b60ed00e,
+        type: 2}
+      propertyPath: dashCooldown
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114069902457986338, guid: e6a3e106cf1cc7f4395b07c4b60ed00e,
+        type: 2}
+      propertyPath: dashVelocity
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e6a3e106cf1cc7f4395b07c4b60ed00e, type: 2}
