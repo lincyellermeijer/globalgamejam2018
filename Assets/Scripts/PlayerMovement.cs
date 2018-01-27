@@ -34,18 +34,32 @@ public class PlayerMovement : MonoBehaviour {
 
     BoxCollider2D boxColl;
     TrailRenderer trail;
+    ParticleSystem particle;
+    SpriteRenderer rend;
     float h;
 
     private GroundState groundState;
 	private Vector3 input; // z is dash 
 
+    public Sprite[] sprite;
+    public Sprite currentSprite;
+
     void Start ()
     {
+        canMove = true;
+
         rb = GetComponent<Rigidbody2D>();
         boxColl = GetComponent<BoxCollider2D>();
         trail = GetComponent<TrailRenderer>();
+        particle = GetComponent<ParticleSystem>();
+        rend = GetComponent<SpriteRenderer>();
+
+        particle.Stop();
+        currentSprite = sprite[0];
 
         groundState = new GroundState(transform.gameObject);
+
+        
     }	
 
 	void Update ()
@@ -60,12 +74,19 @@ public class PlayerMovement : MonoBehaviour {
 		{
 			input.z = 1;
 		}
+
+        rend.sprite = currentSprite;
 	}
 
 
 
 	void FixedUpdate()
     {
+        if (!canMove)
+        {
+            return;
+        }
+
 		Dash();
 
 		rb.AddForce(new Vector2(((input.x * speed) - rb.velocity.x) * (groundState.isGround() ? accel : airAccel), 0)); //Move player.
@@ -77,15 +98,6 @@ public class PlayerMovement : MonoBehaviour {
 
 		input.y = 0;
 	}
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Mine"))
-        {
-            StartCoroutine(Stun());
-            Destroy(collision.gameObject);
-        }
-    }
 
 	void Dash()
 	{
@@ -119,16 +131,20 @@ public class PlayerMovement : MonoBehaviour {
 
 	IEnumerator PlayerDash()
 	{
-		trail.time = 1f;
+        //trail.time = 1f;
+        particle.Play();
+        currentSprite = sprite[1];
 
 		rb.velocity = new Vector2(dashVelocity * input.x, 0);
 		rb.gravityScale = 0;
 		yield return new WaitForSeconds(0.1f);
-		rb.velocity = Vector2.zero;
+        currentSprite = sprite[0];
+        rb.velocity = Vector2.zero;
 		rb.velocity = new Vector2(speed * input.x, 0);
 		rb.gravityScale = 3;
 
-		trail.time = .1f;
+        //trail.time = .1f;
+        particle.Stop();
 	}
 
 	IEnumerator Stun()
@@ -139,8 +155,30 @@ public class PlayerMovement : MonoBehaviour {
 		canMove = true;
 	}
 
+    IEnumerator PlayerDead()
+    {
+        canMove = false;
+        currentSprite = sprite[2];
+        Debug.Log(rend.sprite);
+        yield return new WaitForSeconds(1f);
+        //go back to menu
+    }
 
-	private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Mine"))
+        {
+            StartCoroutine(Stun());
+            Destroy(collision.gameObject);
+        }
+
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            StartCoroutine(PlayerDead());
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("SlowField"))
         {
@@ -161,12 +199,6 @@ public class PlayerMovement : MonoBehaviour {
             collectibles++;
             //Move collectible to next location
         }
-    }
-
-    IEnumerator PlayerDead()
-    {
-        yield return new WaitForSeconds(1f);
-        //go back to menu
     }
 
     private void OnTriggerExit2D(Collider2D collision)
