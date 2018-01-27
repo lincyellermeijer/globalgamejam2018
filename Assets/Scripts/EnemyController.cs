@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    private GameObject hit;
-    private GameObject mine;
-    private GameObject slowField;
     private GameObject player;
+    private float fireRate;
+    private float nextFireSlowField;
+    private float nextFireMine;
 
     private void Start()
     {
@@ -17,8 +17,8 @@ public class EnemyController : MonoBehaviour
     private void Update()
     {
         // Movement
-        var x = Input.GetAxis("Horizontal") * Time.deltaTime * 10.0f;
-        var y = Input.GetAxis("Vertical") * Time.deltaTime * 10.0f;
+        var x = Input.GetAxis("Horizontal") * Time.deltaTime * 20f;
+        var y = Input.GetAxis("Vertical") * Time.deltaTime * 20f;
         transform.Translate(x, y, 0);
 
         // Clamp position to borders
@@ -47,18 +47,29 @@ public class EnemyController : MonoBehaviour
 
         // B Button
         bool Bbtn = Input.GetKeyDown("joystick button 1");
-        if (Bbtn)
+        if (Bbtn && Time.time > nextFireSlowField)
         {
+            fireRate = 5f;
+            //If the player fired, reset the NextFire time to a new point in the future
+            nextFireSlowField = Time.time + fireRate;
+
             GameObject slow = Instantiate(Resources.Load("Prefabs/SlowField"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
+
             // TODO: logic of slowing down in player script
-            Destroy(slow, 5f);
+
+            Destroy(slow, 3f);
         }
 
         // X Button
         bool Xbtn = Input.GetKeyDown("joystick button 2");
-        if (Xbtn)
+        if (Xbtn && Time.time > nextFireMine)
         {
+            fireRate = 2f;
+            //If the player fired, reset the NextFire time to a new point in the future
+            nextFireMine = Time.time + fireRate;
+
             GameObject obj = Instantiate(Resources.Load("Prefabs/Mine"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
+            
             // TODO: logic of mine stun in player script
         }
 
