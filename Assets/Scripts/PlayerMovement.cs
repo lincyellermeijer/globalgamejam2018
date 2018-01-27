@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
-
     public enum States
     {
         Ready,
@@ -48,6 +48,9 @@ public class PlayerMovement : MonoBehaviour
     public Sprite[] sprite;
     public Sprite currentSprite;
 
+    bool invincible = false;
+    public GameObject winloseText;
+
     void Start()
     {
         canMove = true;
@@ -59,8 +62,8 @@ public class PlayerMovement : MonoBehaviour
         rend = GetComponent<SpriteRenderer>();
         particle.Stop();
         currentSprite = sprite[0];
-
-        groundState = new GroundState(transform.gameObject);        
+        winloseText.SetActive(false);
+        groundState = new GroundState(transform.gameObject);
         randomIndex = Random.Range(0, spawnLocation.Length);
         GameObject item = Instantiate(Resources.Load("Prefabs/Collectible"), spawnLocation[randomIndex].transform.position, spawnLocation[randomIndex].transform.rotation) as GameObject;
     }
@@ -158,17 +161,40 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator PlayerDead()
     {
-        canMove = false;
-        currentSprite = sprite[2];
-        Debug.Log(rend.sprite);
+        if (!invincible)
+        {
+            canMove = false;
+            currentSprite = sprite[2];
+            Debug.Log(rend.sprite);
+            CameraShake.script.Shake(.5f, .2f);
+            Time.timeScale = .5f;
+            rb.AddForce(Vector2.up * 1000);
+            rb.AddForce(Vector2.right * Random.Range(-250, 250));
+            yield return new WaitForSeconds(0.2f);
+            winloseText.SetActive(true);
+            winloseText.GetComponent<Text>().text = "Player 1 wins!";
+            winloseText.GetComponent<Animator>().Play("winloseText");
+            yield return new WaitForSeconds(2f);
+            Time.timeScale = 1f;
+            // Go back to main menu
+            winloseText.SetActive(false);
+            MenuManager.Instance.sceneToStart = 0;
+            MenuManager.Instance.StartPressed();
+        }
+    }
+
+    IEnumerator Win()
+    {
         CameraShake.script.Shake(.5f, .2f);
         Time.timeScale = .5f;
-        rb.AddForce(Vector2.up * 1000);
-        rb.AddForce(Vector2.right * Random.Range(-250, 250));
-        yield return new WaitForSeconds(1f);
-
+        yield return new WaitForSeconds(0.2f);
+        winloseText.SetActive(true);
+        winloseText.GetComponent<Text>().text = "Player 2 wins!";
+        winloseText.GetComponent<Animator>().Play("winloseText");
+        yield return new WaitForSeconds(2f);
         Time.timeScale = 1f;
         // Go back to main menu
+        winloseText.SetActive(false);
         MenuManager.Instance.sceneToStart = 0;
         MenuManager.Instance.StartPressed();
     }
@@ -200,92 +226,100 @@ public class PlayerMovement : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            StartCoroutine(PlayerDead());   
-            
+            StartCoroutine(PlayerDead());
         }
 
         if (collision.gameObject.CompareTag("Collectible"))
         {
-            collectibles++;
             Destroy(collision.gameObject);
-            randomIndex = Random.Range(0, spawnLocation.Length);
-            GameObject item = Instantiate(Resources.Load("Prefabs/Collectible"), spawnLocation[randomIndex].transform.position, spawnLocation[randomIndex].transform.rotation) as GameObject;
-        }
-    }
 
-        private void OnTriggerExit2D(Collider2D collision)
-        {
-            if (collision.gameObject.CompareTag("SlowField"))
+            if (collectibles < 5)
             {
-                rb.mass /= 2;
-                rb.velocity *= 2;
-                rb.angularDrag *= 2;
-                fallingGrav *= 2;
-                lowJumpMulitplier *= 2;
+                collectibles++;
+                randomIndex = Random.Range(0, spawnLocation.Length);
+                GameObject item = Instantiate(Resources.Load("Prefabs/Collectible"), spawnLocation[randomIndex].transform.position, spawnLocation[randomIndex].transform.rotation) as GameObject;
+            }
+            else
+            {
+                invincible = true;
+                StartCoroutine(Win());
             }
         }
     }
 
-    public class GroundState
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        private GameObject player;
-        private float width;
-        private float height;
-        private float length;
-
-        //GroundState constructor.  Sets offsets for raycasting.
-        public GroundState(GameObject playerRef)
+        if (collision.gameObject.CompareTag("SlowField"))
         {
-            player = playerRef;
-            width = player.GetComponent<BoxCollider2D>().bounds.extents.x + 0.1f;
-            height = player.GetComponent<BoxCollider2D>().bounds.extents.y + 0.2f;
-            length = 0.05f;
-        }
-
-        //Returns whether or not player is touching wall.
-        public bool isWall()
-        {
-            bool left = Physics2D.Raycast(new Vector2(player.transform.position.x - width, player.transform.position.y), -Vector2.right, length);
-            bool right = Physics2D.Raycast(new Vector2(player.transform.position.x + width, player.transform.position.y), Vector2.right, length);
-
-            if (left || right)
-                return true;
-            else
-                return false;
-        }
-
-        //Returns whether or not player is touching ground.
-        public bool isGround()
-        {
-            bool bottom1 = Physics2D.Raycast(new Vector2(player.transform.position.x, player.transform.position.y - height), -Vector2.up, length);
-            bool bottom2 = Physics2D.Raycast(new Vector2(player.transform.position.x + (width - 0.2f), player.transform.position.y - height), -Vector2.up, length);
-            bool bottom3 = Physics2D.Raycast(new Vector2(player.transform.position.x - (width - 0.2f), player.transform.position.y - height), -Vector2.up, length);
-            if (bottom1 || bottom2 || bottom3)
-                return true;
-            else
-                return false;
-        }
-
-        //Returns whether or not player is touching wall or ground.
-        public bool isTouching()
-        {
-            if (isGround() || isWall())
-                return true;
-            else
-                return false;
-        }
-
-        //Returns direction of wall.
-        public int wallDirection()
-        {
-            bool left = Physics2D.Raycast(new Vector2(player.transform.position.x - width, player.transform.position.y), -Vector2.right, length);
-            bool right = Physics2D.Raycast(new Vector2(player.transform.position.x + width, player.transform.position.y), Vector2.right, length);
-
-            if (left)
-                return -1;
-            else if (right)
-                return 1;
-            else
-                return 0;
+            rb.mass /= 2;
+            rb.velocity *= 2;
+            rb.angularDrag *= 2;
+            fallingGrav *= 2;
+            lowJumpMulitplier *= 2;
         }
     }
+}
+
+public class GroundState
+{
+    private GameObject player;
+    private float width;
+    private float height;
+    private float length;
+
+    //GroundState constructor.  Sets offsets for raycasting.
+    public GroundState(GameObject playerRef)
+    {
+        player = playerRef;
+        width = player.GetComponent<BoxCollider2D>().bounds.extents.x + 0.1f;
+        height = player.GetComponent<BoxCollider2D>().bounds.extents.y + 0.2f;
+        length = 0.05f;
+    }
+
+    //Returns whether or not player is touching wall.
+    public bool isWall()
+    {
+        bool left = Physics2D.Raycast(new Vector2(player.transform.position.x - width, player.transform.position.y), -Vector2.right, length);
+        bool right = Physics2D.Raycast(new Vector2(player.transform.position.x + width, player.transform.position.y), Vector2.right, length);
+
+        if (left || right)
+            return true;
+        else
+            return false;
+    }
+
+    //Returns whether or not player is touching ground.
+    public bool isGround()
+    {
+        bool bottom1 = Physics2D.Raycast(new Vector2(player.transform.position.x, player.transform.position.y - height), -Vector2.up, length);
+        bool bottom2 = Physics2D.Raycast(new Vector2(player.transform.position.x + (width - 0.2f), player.transform.position.y - height), -Vector2.up, length);
+        bool bottom3 = Physics2D.Raycast(new Vector2(player.transform.position.x - (width - 0.2f), player.transform.position.y - height), -Vector2.up, length);
+        if (bottom1 || bottom2 || bottom3)
+            return true;
+        else
+            return false;
+    }
+
+    //Returns whether or not player is touching wall or ground.
+    public bool isTouching()
+    {
+        if (isGround() || isWall())
+            return true;
+        else
+            return false;
+    }
+
+    //Returns direction of wall.
+    public int wallDirection()
+    {
+        bool left = Physics2D.Raycast(new Vector2(player.transform.position.x - width, player.transform.position.y), -Vector2.right, length);
+        bool right = Physics2D.Raycast(new Vector2(player.transform.position.x + width, player.transform.position.y), Vector2.right, length);
+
+        if (left)
+            return -1;
+        else if (right)
+            return 1;
+        else
+            return 0;
+    }
+}

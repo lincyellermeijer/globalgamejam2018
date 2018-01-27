@@ -20,7 +20,6 @@ public class MenuManager : MonoBehaviour
     private float fastFadeIn = .01f;                                    //Very short fade time (10 milliseconds) to start playing music immediately without a click/glitch
     private CanvasGroup menuCanvasGroup;
 
-
     void Awake()
     {
         if (Instance == null)
