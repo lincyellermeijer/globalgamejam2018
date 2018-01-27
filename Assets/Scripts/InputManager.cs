@@ -27,13 +27,13 @@ public class InputManager : MonoBehaviour
     {
         CheckControllers();
 
-        if (bothConnected && SceneManager.GetActiveScene().name == "menu")
-        {
+        //if (bothConnected && SceneManager.GetActiveScene().name == "menu")
+        //{
             if (Input.GetButtonDown("Start"))
             {
-                SceneManager.LoadScene("main");
+                MenuManager.Instance.StartPressed();
             }
-        }
+       // }
     }
 
     // TODO: Do this at specific times to check if controllers are still connected (activate pause menu during gameplay or smth)
@@ -52,9 +52,8 @@ public class InputManager : MonoBehaviour
                 if (!string.IsNullOrEmpty(temp[i]))
                 {
                     //Not empty, controller temp[i] is connected
-                    Debug.Log("Controller " + i + " is connected using: " + temp[i]);
                     isConnectedText[i].text = "Controller " + (i + 1) + " is connected";
-                    isConnectedText[i].color = Color.white;
+                    isConnectedText[i].color = Color.green;
 
                     if (i == 1)
                     {
@@ -64,7 +63,6 @@ public class InputManager : MonoBehaviour
                 else
                 {
                     //If it is empty, controller i is disconnected where i indicates the controller number
-                    Debug.Log("Controller: " + i + " is disconnected.");
                     isConnectedText[i].text = "Controller " + (i + 1) + " is NOT connected!";
                     isConnectedText[i].color = Color.red;
                     bothConnected = false;
