@@ -2,136 +2,114 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour {
+public class PlayerMovement : MonoBehaviour
+{
+	//TODO: put this in its own script
+	public class GroundState
+	{
+		private GameObject player;
+		private float width;
+		private float height;
+		private float length;
 
-    public enum States
-    {
-        InAir,
-        Dashing,
-        WallCling
-    }
+		//GroundState constructor.  Sets offsets for raycasting.
+		public GroundState(GameObject playerRef)
+		{
+			player = playerRef;
+			width = player.GetComponent<BoxCollider2D>().bounds.extents.x + 0.1f;
+			height = player.GetComponent<BoxCollider2D>().bounds.extents.y + 0.2f;
+			length = 0.05f;
+		}
 
-    public float speed;
-    public float maxVelocity;
-    public float jumpForce;
-    public float wallJumpForce;
-    public float wallJumpSidewaysForce;
-    public float wallSlideSpeed;
+		//Returns whether or not player is touching wall.
+		public bool isWall()
+		{
+			bool left = Physics2D.Raycast(new Vector2(player.transform.position.x - width, player.transform.position.y), -Vector2.right, length);
+			bool right = Physics2D.Raycast(new Vector2(player.transform.position.x + width, player.transform.position.y), Vector2.right, length);
 
-    public bool grounded = false;
-    public bool onWall = false;
+			if (left || right)
+				return true;
+			else
+				return false;
+		}
 
-    Rigidbody2D rb;
-    public Vector2 currentVelocity;
+		//Returns whether or not player is touching ground.
+		public bool isGround()
+		{
+			bool bottom1 = Physics2D.Raycast(new Vector2(player.transform.position.x, player.transform.position.y - height), -Vector2.up, length);
+			bool bottom2 = Physics2D.Raycast(new Vector2(player.transform.position.x + (width - 0.2f), player.transform.position.y - height), -Vector2.up, length);
+			bool bottom3 = Physics2D.Raycast(new Vector2(player.transform.position.x - (width - 0.2f), player.transform.position.y - height), -Vector2.up, length);
+			if (bottom1 || bottom2 || bottom3)
+				return true;
+			else
+				return false;
+		}
 
-    public float fallingGrav;
-    public float lowJumpMulitplier;
+		//Returns whether or not player is touching wall or ground.
+		public bool isTouching()
+		{
+			if (isGround() || isWall())
+				return true;
+			else
+				return false;
+		}
 
-    BoxCollider2D boxColl;
+		//Returns direction of wall.
+		public int wallDirection()
+		{
+			bool left = Physics2D.Raycast(new Vector2(player.transform.position.x - width, player.transform.position.y), -Vector2.right, length);
+			bool right = Physics2D.Raycast(new Vector2(player.transform.position.x + width, player.transform.position.y), Vector2.right, length);
 
-    void Start ()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        boxColl = GetComponent<BoxCollider2D>();
-    }	
-
-	void FixedUpdate ()
-    {
-        Movement();
+			if (left)
+				return -1;
+			else if (right)
+				return 1;
+			else
+				return 0;
+		}
 	}
 
-    void Movement()
-    {
-        //Player Movement
-        float h = Input.GetAxis("Horizontal");
-        currentVelocity = rb.velocity;
+	//TODO: feels like slowmotion, which is not cool... could increase if size of world and edit world speed? Unity physics engine is slow or something
+	public float speed = 14f;
+	public float accel = 6f;
+	public float airAccel = 3f;
+	public float jump = 14f; 
 
-        if (currentVelocity.x >= maxVelocity)
-        {
-            currentVelocity.x = maxVelocity;
-        }
-        if (currentVelocity.x <= -maxVelocity)
-        {
-            currentVelocity.x = -maxVelocity;
-        }
-        if (currentVelocity.y <= -10)
-        {
-            currentVelocity.y = 10;
-        }
+	private GroundState groundState;
+	private Rigidbody2D rb;
 
-        if (Input.GetAxis("Horizontal") != 0)
-        {
-            rb.AddForce(new Vector2(h * speed, 0));
-        }
+	void Start()
+	{
+		groundState = new GroundState(transform.gameObject);
+		rb = GetComponent<Rigidbody2D>();
+	}
 
-        //Jumping/Falling
-        if (Input.GetButton("A") && grounded && !onWall)
-        {            
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y + jumpForce);
-            grounded = false;
-        }
-        if (rb.velocity.y < 0 && !onWall)
-        {
-            rb.velocity += Vector2.up * Physics2D.gravity.y * (fallingGrav) * Time.deltaTime;
-        }
-        else if (rb.velocity.y > 0 && !Input.GetButton("A") && !onWall)
-        {
-            rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMulitplier) * Time.deltaTime;
-        }
+	private Vector2 input;
 
-        if (Input.GetButton("A") && !grounded && onWall)
-        {
-            onWall = false;
+	void Update()
+	{
+		//Handle input
+		if (Input.GetAxis("Horizontal") < 0)
+			input.x = -1;
+		else if (Input.GetAxis("Horizontal") > 0)
+			input.x = 1;
+		else
+			input.x = 0;
 
-            RaycastHit2D leftRay = Physics2D.Raycast(transform.position, Vector2.left);
-            RaycastHit2D rightRay = Physics2D.Raycast(transform.position, Vector2.right);
+		if (Input.GetButton("A"))
+			input.y = 1;
 
-            if (leftRay.collider != null && rightRay.collider != null)
-            {
-                float distanceLeft = Mathf.Abs(leftRay.point.x - transform.position.x);
-                float distanceRight = Mathf.Abs(rightRay.point.x - transform.position.x);
+	}
 
-                if (distanceLeft < distanceRight)
-                {
-                    wallJumpSidewaysForce = 10f;
-                }
-                else if (distanceLeft > distanceRight)
-                {
-                    wallJumpSidewaysForce = -10f;
-                }
-            }
-            rb.velocity = new Vector2(rb.velocity.x + wallJumpSidewaysForce, rb.velocity.y + wallJumpForce);
+	void FixedUpdate()
+	{
+		rb.AddForce(new Vector2(((input.x * speed) - rb.velocity.x) * (groundState.isGround() ? accel : airAccel), 0)); //Move player.
+		rb.velocity = new Vector2((input.x == 0 && groundState.isGround()) ? 0 : rb.velocity.x,
+								(input.y == 1 && groundState.isTouching()) ? jump : rb.velocity.y); //Stop player if input.x is 0 (and grounded) and jump if input.y is 1
 
-        }
-    }
+		if (groundState.isWall() && !groundState.isGround() && input.y == 1)
+			rb.velocity = new Vector2(-groundState.wallDirection() * speed * 0.75f, rb.velocity.y); //Add force negative to wall direction (with speed reduction)
 
-    void WallJump()
-    {
-
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            grounded = true;
-            onWall = false;
-        }
-
-        //if (collision.gameObject.CompareTag("Wall"))
-        //{
-
-        //}
-    }
-
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Wall"))
-        {
-            if (!grounded)
-            {
-                onWall = true;
-            }
-        }
-    }
+		input.y = 0;
+	}
 }
