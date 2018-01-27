@@ -10,8 +10,6 @@ public class EnemyController : MonoBehaviour
     private float nextFireExplosion;
     private float nextFireSlowField;
     private float nextFireMine;
-    public GameObject coolDownIcons;
-
     public Image[] cdImages;
 
     private void Start()
@@ -52,11 +50,11 @@ public class EnemyController : MonoBehaviour
         if (Input.GetButtonDown("Fire1") && Time.time > nextFireExplosion)
         {
             cdImages[0].fillAmount = 1f;
-            
+
             fireRate = 1f;
             nextFireExplosion = Time.time + fireRate;
             CameraShake.script.Shake(.5f, .2f);
-            GameObject expl = Instantiate(Resources.Load("Prefabs/PrimaryFireParticles"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
+            GameObject expl = Instantiate(Resources.Load("Prefabs/Abilities/PrimaryFireParticles"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
             // Add explosion force
             Vector2 dir = player.transform.position - transform.position;
             dir = dir.normalized;
@@ -78,15 +76,7 @@ public class EnemyController : MonoBehaviour
             //If the player fired, reset the NextFire time to a new point in the future
             nextFireSlowField = Time.time + fireRate;
 
-            // Spawn cooldown icon
-            GameObject icon = Instantiate(Resources.Load("Prefabs/CoolDownIcon")) as GameObject;
-            icon.transform.SetParent(coolDownIcons.transform, false);
-            icon.GetComponent<Image>().color = Color.cyan;
-        
-        GameObject slow = Instantiate(Resources.Load("Prefabs/SlowField"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
-
-            // Logic of slowing down in player script
-            Destroy(icon, 5f);
+            GameObject slow = Instantiate(Resources.Load("Prefabs/Abilities/SlowField"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
             Destroy(slow, 3f);
         }
 
@@ -99,14 +89,7 @@ public class EnemyController : MonoBehaviour
             //If the player fired, reset the NextFire time to a new point in the future
             nextFireMine = Time.time + fireRate;
 
-            // Spawn cooldown icon
-            GameObject icon = Instantiate(Resources.Load("Prefabs/CoolDownIcon")) as GameObject;
-            icon.transform.SetParent(coolDownIcons.transform, false);
-            icon.GetComponent<Image>().color = Color.red;
-
-            GameObject obj = Instantiate(Resources.Load("Prefabs/Mine"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
-
-            Destroy(icon, 2f);
+            GameObject obj = Instantiate(Resources.Load("Prefabs/Abilities/Mine"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
             Destroy(obj, 10f);
         }
 
