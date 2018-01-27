@@ -60,10 +60,16 @@ public class PlayerMovement : MonoBehaviour
         particle.Stop();
         currentSprite = sprite[0];
 
+<<<<<<< HEAD
         groundState = new GroundState(transform.gameObject);        
+    }	
+=======
+        groundState = new GroundState(transform.gameObject);
+
         randomIndex = Random.Range(0, spawnLocation.Length);
         GameObject item = Instantiate(Resources.Load("Prefabs/Collectible"), spawnLocation[randomIndex].transform.position, spawnLocation[randomIndex].transform.rotation) as GameObject;
     }
+>>>>>>> Collectibles
 
     void Update()
     {
@@ -80,6 +86,11 @@ public class PlayerMovement : MonoBehaviour
 
         rend.sprite = currentSprite;
     }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> Collectibles
 
     void FixedUpdate()
     {
@@ -198,8 +209,12 @@ public class PlayerMovement : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Enemy"))
         {
+<<<<<<< HEAD
             StartCoroutine(PlayerDead());   
             
+=======
+            StartCoroutine(PlayerDead());
+>>>>>>> Collectibles
         }
 
         if (collision.gameObject.CompareTag("Collectible"))

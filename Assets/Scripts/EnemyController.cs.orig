@@ -84,7 +84,12 @@ public class EnemyController : MonoBehaviour
             GameObject obj = Instantiate(Resources.Load("Prefabs/Mine"), new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity) as GameObject;
 
             Destroy(icon, 2f);
+<<<<<<< HEAD
             Destroy(obj, 10f);
+            // TODO: logic of mine stun in player script
+=======
+            //Logic of mine stun in player script
+>>>>>>> Collectibles
         }
 
         // Y Button
