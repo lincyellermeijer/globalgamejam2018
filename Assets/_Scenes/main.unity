@@ -113,6 +113,26 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &178288729 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1899257048585942, guid: 665dac6570d7b5247957c2e1198cd6b7,
+    type: 2}
+  m_PrefabInternal: {fileID: 475449348}
+--- !u!58 &178288730
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 178288729}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5
 --- !u!1 &181830676 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 1063145410450130, guid: e6a3e106cf1cc7f4395b07c4b60ed00e,
@@ -189,6 +209,16 @@ Prefab:
         type: 2}
       propertyPath: m_SpriteTilingProperty.oldSize.y
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 50421309916970988, guid: e6a3e106cf1cc7f4395b07c4b60ed00e,
+        type: 2}
+      propertyPath: m_GravityScale
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114069902457986338, guid: e6a3e106cf1cc7f4395b07c4b60ed00e,
+        type: 2}
+      propertyPath: jumpForce
+      value: 14
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e6a3e106cf1cc7f4395b07c4b60ed00e, type: 2}
@@ -322,6 +352,10 @@ Prefab:
       propertyPath: path.Array.data[3]
       value: 
       objectReference: {fileID: 1440265051}
+    - target: {fileID: 1899257048585942, guid: 665dac6570d7b5247957c2e1198cd6b7, type: 2}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 665dac6570d7b5247957c2e1198cd6b7, type: 2}
   m_IsPrefabParent: 0
@@ -457,6 +491,10 @@ Prefab:
     - target: {fileID: 4581101786237820, guid: bb7442c19ae64db4784f4cb77d20e2aa, type: 2}
       propertyPath: m_RootOrder
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1544707115555982, guid: bb7442c19ae64db4784f4cb77d20e2aa, type: 2}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bb7442c19ae64db4784f4cb77d20e2aa, type: 2}

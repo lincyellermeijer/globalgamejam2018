@@ -8,6 +8,7 @@ TagManager:
   - Wall
   - Mine
   - SlowField
+  - Enemy
   layers:
   - Default
   - TransparentFX

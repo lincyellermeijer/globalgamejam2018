@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour {
         Cooldown
     }
 
+    public int collectibles;
     public States state;
 
     public float speed = 14f;
@@ -49,13 +50,13 @@ public class PlayerMovement : MonoBehaviour {
 
 	void Update ()
     {
-        input.x = Input.GetAxis("Horizontal");
+        input.x = Input.GetAxis("Move");
 		
 
-		if (Input.GetButton("A"))
+		if (Input.GetButton("Jump"))
 			input.y = 1;
 
-		if(Input.GetButtonDown("X"))
+		if(Input.GetButtonDown("Dash"))
 		{
 			input.z = 1;
 		}
@@ -149,6 +150,23 @@ public class PlayerMovement : MonoBehaviour {
             fallingGrav /= 2;
             lowJumpMulitplier /= 2;
         }
+
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            StartCoroutine(PlayerDead());            
+        }
+
+        if (collision.gameObject.CompareTag("Collectible"))
+        {
+            collectibles++;
+            //Move collectible to next location
+        }
+    }
+
+    IEnumerator PlayerDead()
+    {
+        yield return new WaitForSeconds(1f);
+        //go back to menu
     }
 
     private void OnTriggerExit2D(Collider2D collision)
