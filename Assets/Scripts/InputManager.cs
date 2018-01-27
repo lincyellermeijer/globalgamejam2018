@@ -31,7 +31,7 @@ public class InputManager : MonoBehaviour
         {
             if (Input.GetButtonDown("Start"))
             {
-                SceneManager.LoadScene("main");
+                MenuManager.Instance.StartPressed();
             }
         }
     }
@@ -52,7 +52,6 @@ public class InputManager : MonoBehaviour
                 if (!string.IsNullOrEmpty(temp[i]))
                 {
                     //Not empty, controller temp[i] is connected
-                    Debug.Log("Controller " + i + " is connected using: " + temp[i]);
                     isConnectedText[i].text = "Controller " + (i + 1) + " is connected";
                     isConnectedText[i].color = Color.white;
 
@@ -64,7 +63,6 @@ public class InputManager : MonoBehaviour
                 else
                 {
                     //If it is empty, controller i is disconnected where i indicates the controller number
-                    Debug.Log("Controller: " + i + " is disconnected.");
                     isConnectedText[i].text = "Controller " + (i + 1) + " is NOT connected!";
                     isConnectedText[i].color = Color.red;
                     bothConnected = false;
