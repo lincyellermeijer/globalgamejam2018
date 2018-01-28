@@ -36,6 +36,9 @@ public class PlayerMovement : MonoBehaviour
     TrailRenderer trail;
     ParticleSystem particle;
     SpriteRenderer rend;
+    AudioSource source;
+    public AudioClip[] clip;
+
     float h;
 
     int randomIndex;
@@ -60,6 +63,7 @@ public class PlayerMovement : MonoBehaviour
         trail = GetComponent<TrailRenderer>();
         particle = GetComponent<ParticleSystem>();
         rend = GetComponent<SpriteRenderer>();
+        source = GetComponent<AudioSource>();
         particle.Stop();
         currentSprite = sprite[0];
         winloseText.SetActive(false);
@@ -90,6 +94,11 @@ public class PlayerMovement : MonoBehaviour
         }
 
         rend.sprite = currentSprite;
+
+        if (Input.GetButtonDown("Jump") && (groundState.isWall() || groundState.isGround()))
+        {
+            source.PlayOneShot(clip[0]);
+        }
     }
 
     void FixedUpdate()
@@ -173,6 +182,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!invincible)
         {
+            source.PlayOneShot(clip[2]);
             canMove = false;
             currentSprite = sprite[2];
             Debug.Log(rend.sprite);
@@ -241,6 +251,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Collectible"))
         {
+            source.PlayOneShot(clip[1]);
             Destroy(collision.gameObject);
 
             if (collectibles < 5)
