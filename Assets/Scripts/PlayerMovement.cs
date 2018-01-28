@@ -195,6 +195,7 @@ public class PlayerMovement : MonoBehaviour
             winloseText.GetComponent<Text>().text = "Player 1 wins!";
             winloseText.GetComponent<Animator>().Play("winloseText");
             MenuManager.Instance.GetComponent<AudioSource>().Stop();
+            source.PlayOneShot(clip[3]);
             yield return new WaitForSeconds(2f);
             Time.timeScale = 1f;
             // Go back to main menu
@@ -214,12 +215,14 @@ public class PlayerMovement : MonoBehaviour
         winloseText.GetComponent<Text>().text = "Player 2 wins!";
         winloseText.GetComponent<Animator>().Play("winloseText");
         MenuManager.Instance.GetComponent<AudioSource>().Stop();
+        source.PlayOneShot(clip[3]);
         yield return new WaitForSeconds(2f);
         Time.timeScale = 1f;
         // Go back to main menu
         winloseText.SetActive(false);
         MenuManager.Instance.sceneToStart = 0;
         MenuManager.Instance.StartPressed();
+        invincible = false;
         MenuManager.Instance.GetComponent<AudioSource>().Play();
     }
 

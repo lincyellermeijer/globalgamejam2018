@@ -32,14 +32,14 @@ public class InputManager : MonoBehaviour
     {
         CheckControllers();
 
-        if (bothConnected && SceneManager.GetActiveScene().name == "menu")
-        {
+        //if (bothConnected && SceneManager.GetActiveScene().name == "menu")
+        //{
             if (Input.GetButtonDown("Start"))
             {
                 MenuManager.Instance.sceneToStart = 1;
                 MenuManager.Instance.StartPressed();
             }
-        }
+        //}
     }
 
     // TODO: Do this at specific times to check if controllers are still connected (activate pause menu during gameplay or smth)
