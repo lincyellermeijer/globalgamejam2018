@@ -54,7 +54,10 @@ public class PlayerMovement : MonoBehaviour
     bool invincible = false;
     public GameObject winloseText;
 
-    void Start()
+
+	public bool facingRight = true;
+
+	void Start()
     {
         canMove = true;
 
@@ -75,13 +78,13 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         input.x = Input.GetAxis("Move");
-        if (input.x < 0)
+        if (input.x > 0 && !facingRight)
         {
-            transform.localScale = new Vector2(transform.localScale.x * -1, transform.localScale.y);
-        }
-        else
-        {
-            transform.localScale = new Vector2(transform.localScale.x * -1, transform.localScale.y);
+			Flip();
+		}
+		else if(input.x < 0 && facingRight)
+		{
+			Flip();
         }
 
 
@@ -101,7 +104,14 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+
+	void Flip()
+	{
+		facingRight = !facingRight;
+		transform.Rotate(new Vector3(0, -180, 0));
+	}
+
+	void FixedUpdate()
     {
         if (!canMove)
         {
@@ -126,7 +136,7 @@ public class PlayerMovement : MonoBehaviour
         {
             case States.Ready:
 
-                if (input.z == 1 && input.x != 0)
+                if (input.z == 1)
                 {
                     state = States.Dashing;
                 }
@@ -150,25 +160,24 @@ public class PlayerMovement : MonoBehaviour
         input.z = 0;
     }
 
-    IEnumerator PlayerDash()
-    {
-        //trail.time = 1f;
-        particle.Play();
-        currentSprite = sprite[1];
+	IEnumerator PlayerDash()
+	{
+		//trail.time = 1f;
+		particle.Play();
+		currentSprite = sprite[1];
 
-        rb.velocity = new Vector2(dashVelocity * input.x, 0);
-        rb.gravityScale = 0;
-        yield return new WaitForSeconds(0.1f);
-        currentSprite = sprite[0];
-        rb.velocity = Vector2.zero;
-        rb.velocity = new Vector2(speed * input.x, 0);
-        rb.gravityScale = 3;
+		rb.velocity = new Vector2(dashVelocity * (facingRight ? 1 : -1), 0);
+		rb.gravityScale = 0;
+		yield return new WaitForSeconds(0.1f);
+		currentSprite = sprite[0];
+		rb.gravityScale = 3;
 
-        //trail.time = .1f;
-        particle.Stop();
-    }
+		//trail.time = .1f;
+		particle.Stop();
 
-    IEnumerator Stun()
+	}
+
+	IEnumerator Stun()
     {
         canMove = false;
         rb.velocity = new Vector2(0, rb.velocity.y);
@@ -180,7 +189,7 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator PlayerDead()
     {
-        if (!invincible)
+        if (!invincible && canMove)
         {
             source.PlayOneShot(clip[2]);
             canMove = false;
@@ -208,22 +217,22 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator Win()
     {
-        CameraShake.script.Shake(.5f, .2f);
-        Time.timeScale = .5f;
-        yield return new WaitForSeconds(0.2f);
-        winloseText.SetActive(true);
-        winloseText.GetComponent<Text>().text = "Player 2 wins!";
-        winloseText.GetComponent<Animator>().Play("winloseText");
-        MenuManager.Instance.GetComponent<AudioSource>().Stop();
-        source.PlayOneShot(clip[3]);
-        yield return new WaitForSeconds(2f);
-        Time.timeScale = 1f;
-        // Go back to main menu
-        winloseText.SetActive(false);
-        MenuManager.Instance.sceneToStart = 0;
-        MenuManager.Instance.StartPressed();
-        invincible = false;
-        MenuManager.Instance.GetComponent<AudioSource>().Play();
+            CameraShake.script.Shake(.5f, .2f);
+            Time.timeScale = .5f;
+            yield return new WaitForSeconds(0.2f);
+            winloseText.SetActive(true);
+            winloseText.GetComponent<Text>().text = "Player 2 wins!";
+            winloseText.GetComponent<Animator>().Play("winloseText");
+            MenuManager.Instance.GetComponent<AudioSource>().Stop();
+            source.PlayOneShot(clip[3]);
+            yield return new WaitForSeconds(2f);
+            Time.timeScale = 1f;
+            // Go back to main menu
+            winloseText.SetActive(false);
+            MenuManager.Instance.sceneToStart = 0;
+            MenuManager.Instance.StartPressed();
+            invincible = false;
+            MenuManager.Instance.GetComponent<AudioSource>().Play();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
