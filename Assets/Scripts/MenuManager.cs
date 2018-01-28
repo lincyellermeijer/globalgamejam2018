@@ -15,8 +15,7 @@ public class MenuManager : MonoBehaviour
 
     [HideInInspector] public bool inMainMenu = true;                    //If true, pause button disabled in main menu (Cancel in input manager, default escape key)
     [HideInInspector] public AnimationClip fadeAlphaAnimationClip;      //Animation clip fading out UI elements alpha
-
-    private PlayMusic playMusic;                                        //Reference to PlayMusic script
+    
     private float fastFadeIn = .01f;                                    //Very short fade time (10 milliseconds) to start playing music immediately without a click/glitch
     private CanvasGroup menuCanvasGroup;
 
@@ -33,14 +32,12 @@ public class MenuManager : MonoBehaviour
 
         DontDestroyOnLoad(transform.gameObject);
 
-        //Get a reference to PlayMusic attached to UI object
-        playMusic = GetComponent<PlayMusic>();
-
         //Get a reference to the CanvasGroup attached to the main menu so that we can fade it's alpha
         menuCanvasGroup = GetComponent<CanvasGroup>();
         fadeImage = GameObject.FindWithTag("Fade").GetComponent<Image>();
         fadeOutImageCanvasGroup = GameObject.FindWithTag("Fade").GetComponent<CanvasGroup>();
         fadeImage.color = menuSettingsData.sceneChangeFadeColor;
+        changeMusicOnStart = false;
     }
 
     public void StartPressed()
@@ -50,13 +47,6 @@ public class MenuManager : MonoBehaviour
             fadeImage = GameObject.FindWithTag("Fade").GetComponent<Image>();
             fadeOutImageCanvasGroup = GameObject.FindWithTag("Fade").GetComponent<CanvasGroup>();
         }
-        //If changeMusicOnStart is true, fade out volume of music group of AudioMixer by calling FadeDown function of PlayMusic
-        //To change fade time, change length of animation "FadeToColor"
-        if (menuSettingsData.musicLoopToChangeTo != null)
-        {
-            playMusic.FadeDown(menuSettingsData.menuFadeTime);
-        }
-
         //If changeScenes is true, start fading and change scenes halfway through animation when screen is blocked by FadeImage
         if (menuSettingsData.nextSceneIndex != 0)
         {
@@ -66,26 +56,6 @@ public class MenuManager : MonoBehaviour
             StartCoroutine(FadeCanvasGroupAlpha(0f, 1f, fadeOutImageCanvasGroup));
         }
 
-    }
-
-    void OnEnable()
-    {
-        SceneManager.sceneLoaded += SceneWasLoaded;
-    }
-
-    void OnDisable()
-    {
-        SceneManager.sceneLoaded -= SceneWasLoaded;
-    }
-
-    //Once the level has loaded, check if we want to call PlayLevelMusic
-    void SceneWasLoaded(Scene scene, LoadSceneMode mode)
-    {
-        //if changeMusicOnStart is true, call the PlayLevelMusic function of playMusic
-        if (menuSettingsData.musicLoopToChangeTo != null)
-        {
-            playMusic.PlayLevelMusic();
-        }
     }
 
     public void LoadDelayed()
@@ -110,13 +80,5 @@ public class MenuManager : MonoBehaviour
             canvasGroupToFadeAlpha.alpha = currentAlpha;
             yield return null;
         }
-    }
-
-    public void PlayNewMusic()
-    {
-        //Fade up music nearly instantly without a click 
-        playMusic.FadeUp(fastFadeIn);
-        //Play second music clip from MenuSettings
-        playMusic.PlaySelectedMusic(menuSettingsData.musicLoopToChangeTo);
     }
 }
