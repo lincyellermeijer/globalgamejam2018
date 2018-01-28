@@ -42,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
     float h;
 
     int randomIndex;
-    public int collectibles;
+    public int collectibles = 0;
     public GameObject[] spawnLocation;
 
     private GroundState groundState;
@@ -201,7 +201,7 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(Vector2.right * Random.Range(-250, 250));
             yield return new WaitForSeconds(0.2f);
             winloseText.SetActive(true);
-            winloseText.GetComponent<Text>().text = "Player 1 wins!";
+            winloseText.GetComponent<Text>().text = "Player 2 wins!";
             winloseText.GetComponent<Animator>().Play("winloseText");
             MenuManager.Instance.GetComponent<AudioSource>().Stop();
             source.PlayOneShot(clip[3]);
@@ -221,7 +221,7 @@ public class PlayerMovement : MonoBehaviour
             Time.timeScale = .5f;
             yield return new WaitForSeconds(0.2f);
             winloseText.SetActive(true);
-            winloseText.GetComponent<Text>().text = "Player 2 wins!";
+            winloseText.GetComponent<Text>().text = "Player 1 wins!";
             winloseText.GetComponent<Animator>().Play("winloseText");
             MenuManager.Instance.GetComponent<AudioSource>().Stop();
             source.PlayOneShot(clip[3]);

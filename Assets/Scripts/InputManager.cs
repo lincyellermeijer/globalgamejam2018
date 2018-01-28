@@ -22,10 +22,11 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    //public void Start()
-    //{
-    //    CheckControllers();
-    //}
+    public void Start()
+    {
+        CheckControllers();
+        Time.timeScale = 1f;
+    }
 
     // Start game if both controllers are connected and one of the players presses start
     public void Update()
