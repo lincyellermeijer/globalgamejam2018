@@ -71,6 +71,14 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         input.x = Input.GetAxis("Move");
+        if (input.x < 0)
+        {
+            transform.localScale = new Vector2(transform.localScale.x * -1, transform.localScale.y);
+        }
+        else
+        {
+            transform.localScale = new Vector2(transform.localScale.x * -1, transform.localScale.y);
+        }
 
 
         if (Input.GetButton("Jump"))
@@ -155,7 +163,9 @@ public class PlayerMovement : MonoBehaviour
     {
         canMove = false;
         rb.velocity = new Vector2(0, rb.velocity.y);
+        rend.color = new Color(0f, 0f, 1f, 1f);
         yield return new WaitForSeconds(stunTime);
+        rend.color = new Color(1f, 1f, 1f, 1f);
         canMove = true;
     }
 
