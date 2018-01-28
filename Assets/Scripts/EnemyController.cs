@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class EnemyController : MonoBehaviour
 {
     private GameObject player;
+    private AudioSource source;
+    public AudioClip clip;
     private float fireRate;
     private float nextFireExplosion;
     private float nextFireSlowField;
@@ -15,6 +17,7 @@ public class EnemyController : MonoBehaviour
     private void Start()
     {
         player = GameObject.FindWithTag("Player");
+        source = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -47,8 +50,10 @@ public class EnemyController : MonoBehaviour
         }
 
         // A Button
-        if (Input.GetButtonDown("Fire1") && Time.time > nextFireExplosion)
+        if (Input.GetButtonDown("Fire1") && Time.time > nextFireExplosion || Input.GetKeyDown(KeyCode.Space) && Time.time > nextFireExplosion)
         {
+            source.PlayOneShot(clip);
+
             cdImages[0].fillAmount = 1f;
 
             fireRate = 1f;

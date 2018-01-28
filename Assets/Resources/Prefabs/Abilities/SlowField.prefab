@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4025978677880570}
   - component: {fileID: 212241530919528090}
   - component: {fileID: 58286724337450388}
+  - component: {fileID: 95292222301351042}
   m_Layer: 0
   m_Name: SlowField
   m_TagString: SlowField
@@ -56,6 +57,23 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!95 &95292222301351042
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1925588628445900}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 61d83629ae91497469c6cf7900d17e40, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!212 &212241530919528090
 SpriteRenderer:
   m_ObjectHideFlags: 1
