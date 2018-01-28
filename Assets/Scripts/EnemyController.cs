@@ -60,10 +60,11 @@ public class EnemyController : MonoBehaviour
             dir = dir.normalized;
             float distance = Vector2.Distance(transform.position, player.transform.position);
 
-            if (distance < 15f)
+			Debug.Log(distance);
+
+            if (distance < 5f)
             {
-				Debug.Log("HIT");
-                player.GetComponent<Rigidbody2D>().AddForce((dir * (1 / (distance))) * 1000);
+                player.GetComponent<Rigidbody2D>().AddForce((dir * 1000) + ((dir * (1 / (distance))) * 200));
             }
             Destroy(expl, 0.7f);
         }
