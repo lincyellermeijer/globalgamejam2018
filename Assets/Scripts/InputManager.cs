@@ -10,7 +10,7 @@ public class InputManager : MonoBehaviour
     public Text[] isConnectedText = new Text[2];
     private bool bothConnected = false;
 
-    public void Awake()
+    void Awake()
     {
         if (Instance == null)
         {
@@ -22,19 +22,24 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        CheckControllers();
+    }
+
     // Start game if both controllers are connected and one of the players presses start
-    public void Update()
+    void Update()
     {
         CheckControllers();
 
-        //if (bothConnected && SceneManager.GetActiveScene().name == "menu")
-        //{
-        if (Input.GetButtonDown("Start"))
+        if (bothConnected && SceneManager.GetActiveScene().name == "menu")
         {
-            MenuManager.Instance.sceneToStart = 1;
-            MenuManager.Instance.StartPressed();
+            if (Input.GetButtonDown("Start"))
+            {
+                MenuManager.Instance.sceneToStart = 1;
+                MenuManager.Instance.StartPressed();
+            }
         }
-        // }
     }
 
     // TODO: Do this at specific times to check if controllers are still connected (activate pause menu during gameplay or smth)
