@@ -287,7 +287,7 @@ GameObject:
   - component: {fileID: 173871198}
   - component: {fileID: 365885681}
   m_Layer: 5
-  m_Name: isConnectedText
+  m_Name: isConnectedText1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -738,7 +738,7 @@ GameObject:
   - component: {fileID: 54974426}
   - component: {fileID: 773670222}
   m_Layer: 5
-  m_Name: isConnectedText
+  m_Name: isConnectedText2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

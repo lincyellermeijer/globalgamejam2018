@@ -10,7 +10,7 @@ public class InputManager : MonoBehaviour
     public Text[] isConnectedText = new Text[2];
     private bool bothConnected = false;
 
-    void Awake()
+    public void Awake()
     {
         if (Instance == null)
         {
@@ -22,13 +22,13 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-        CheckControllers();
-    }
+    //public void Start()
+    //{
+    //    CheckControllers();
+    //}
 
     // Start game if both controllers are connected and one of the players presses start
-    void Update()
+    public void Update()
     {
         CheckControllers();
 
@@ -48,31 +48,27 @@ public class InputManager : MonoBehaviour
         //Get Joystick Names
         string[] temp = Input.GetJoystickNames();
 
-        //Check whether array contains anything
-        if (temp.Length > 0)
+        //Iterate over every element
+        for (int i = 0; i < temp.Length; ++i)
         {
-            //Iterate over every element
-            for (int i = 0; i < temp.Length; ++i)
+            //Check if the string is empty or not
+            if (!string.IsNullOrEmpty(temp[i]))
             {
-                //Check if the string is empty or not
-                if (!string.IsNullOrEmpty(temp[i]))
-                {
-                    //Not empty, controller temp[i] is connected
-                    isConnectedText[i].text = "Controller " + (i + 1) + " is connected";
-                    isConnectedText[i].color = Color.green;
+                //Not empty, controller temp[i] is connected
+                isConnectedText[i].text = "Controller " + (i+1) + " is connected";
+                isConnectedText[i].color = Color.green;
 
-                    if (i == 1)
-                    {
-                        bothConnected = true;
-                    }
-                }
-                else
+                if (i == 1)
                 {
-                    //If it is empty, controller i is disconnected where i indicates the controller number
-                    isConnectedText[i].text = "Controller " + (i + 1) + " is NOT connected!";
-                    isConnectedText[i].color = Color.red;
-                    bothConnected = false;
+                    bothConnected = true;
                 }
+            }
+            else
+            {
+                //If it is empty, controller i is disconnected where i indicates the controller number
+                isConnectedText[i].text = "Controller " + (i+1) + " is NOT connected!";
+                isConnectedText[i].color = Color.red;
+                bothConnected = false;
             }
         }
     }
